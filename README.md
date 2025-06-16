@@ -1,4 +1,5 @@
 # 🎥 VideoDescription
+팀 뱅쇼 : 권나윤 김미나 김지윤 민서연 정여원
 
 **AI-powered system that generates and refines audio descriptions from drama videos to recreate accessible content for the visually impaired.**  
 **시각장애인을 위한 접근 가능한 콘텐츠 제작을 위한 AI 기반 드라마 영상 해설 자동 생성 시스템입니다.**
