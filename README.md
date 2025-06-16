@@ -51,15 +51,17 @@ AI 기반 드라마 영상 해설 자동 생성 시스템으로, 시각장애인
 
 ## 💻 Installation / 설치 방법
 
-> Python 3.8 이상이 필요합니다.
-> Python 3.10 권장
+> Python 3.10, 3.11 버전 모두 필요합니다.
 
 1. 프로젝트 클론:
 ```bash
 git clone https://github.com/your-username/VideoDescription.git
 cd VideoDescription
 ```
-
+2. 프로젝트 실행:
+```bash
+pip install flask
+python app.py
 ---
 
 ## 📂 Data 데이터
@@ -176,27 +178,6 @@ train_phi2_lora.py는 phi-2 모델을 LoRA(저자원 어댑터) 기법으로 미
 
 ---
 
-### 🔧 설정
-스크립트 상단에서 다음 경로를 사용자 환경에 맞게 수정해야 합니다:
-
-```python
-IMAGE_DIR = "path/to/keyframes"
-JSONL_PATH = "path/to/captions.jsonl"
-truth_path = "path/to/ground_truth.jsonl"  # 정답 자막이 포함된 JSONL 파일 (image, caption 필드)
-candidates_path = "path/to/caption_candidates.json"  # 후보 자막들이 포함된 JSON 파일 (image, captions 필드)
-output_path = "path/to/output_sft_data.jsonl"  # 생성된 SFT 학습 데이터가 저장될 경로
-OUTPUT_DIR = "path/to/save/phi2_lora_adapter"  # LoRA 학습 결과 저장 디렉토리
-CANDIDATE_PATH = "path/to/candidate.json"  # 사용자가 직접 설정할 경로
-OUTPUT_PATH = "path/to/final_caption.json"  # 결과 저장할 경로
-jsonl_files = [
-    "path/to/sft/drama1.jsonl",
-    "path/to/sft/drama2.jsonl",
-    # ... 학습에 사용할 SFT JSONL 파일들
-]
-```
-
----
-
 ## 🏗️ pipeline 폴더
 
 ---
@@ -229,7 +210,7 @@ Whisper 모델을 사용하여 동영상 파일에서 대사를 추출하고, �
 
 ---
 
-### 🧠 YOLO 기반 객체 인식: `run_yolo_on_video.py`
+### 🧠 `process_frame_yolo.py`
 이 스크립트는 YOLOv8(nano 모델)을 활용하여 동영상의 각 구간(자막 기반 타임스탬프)에 등장하는 객체를 탐지합니다. 결과는 기존 자막 JSON (`deepface_ocr.json`)에 `"yolo"` 필드로 추가됩니다.
 
 - 입력:
@@ -243,7 +224,7 @@ Whisper 모델을 사용하여 동영상 파일에서 대사를 추출하고, �
 
 ---
 
-### 🎞️ Scene Detection 및 Keyframe 추출: `keyframe_extractor.py`
+### 🎞️ `keyframe.py`
 이 스크립트는 영상 내 장면 전환(Scene Change)을 감지하고, 각 장면의 시작 시점의 프레임을 이미지로 저장합니다. 또한 각 키프레임의 타임스탬프 범위를 포함하는 메타데이터를 JSON 파일로 저장합니다.
 
 - 입력:
@@ -257,7 +238,7 @@ Whisper 모델을 사용하여 동영상 파일에서 대사를 추출하고, �
 
 ---
 
-### 🔗 YOLO + 자막 병합 스크립트: `generate_final_input_json.py`
+### 🔗 YOLO + 자막 병합 스크립트: `json_merged.py`
 이 스크립트는 YOLOv8 객체 인식 결과(`yolo_results.json`)와 Whisper 음성 자막 결과(`video_script_large.json`)를 타임스탬프 기준으로 병합합니다. 결과로 생성되는 `final_input.json`은 각 객체 탐지 시간대에 대응하는 자막(대사)을 포함하며, 비디오 설명 시스템의 입력으로 사용됩니다.
 
 - 입력:
