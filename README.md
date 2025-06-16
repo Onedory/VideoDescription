@@ -62,6 +62,7 @@ cd VideoDescription
 ```bash
 pip install flask
 python app.py
+```
 ---
 
 ## 📂 Data 데이터
